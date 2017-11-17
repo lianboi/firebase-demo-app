@@ -5,10 +5,9 @@ class ChatRoom extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			messages: [],
+			messages: {},
 			newMessage: ''
 		};
-		console.log("props in chatrooms....", props);
 		this.props = props;
 		let db = firebase.database();
 		let thisApp = this;
@@ -28,17 +27,30 @@ class ChatRoom extends Component {
 	
 	sendMessage () {
 		let db = firebase.database();
-		let thisApp = this;
-		db.ref('/messages/'+thisApp.props.match.params.roomkey).push({
-			message: this.state.newMessage
+		db.ref('/messages/'+this.props.match.params.roomkey).push({
+			message: this.state.newMessage,
+			timestamp: firebase.database.ServerValue.TIMESTAMP,
+			user: {
+				email: firebase.auth().currentUser.email,
+				uid: firebase.auth().currentUser.uid
+			}
 		});
 	}
 
 	render () {
+		let messages = [];
+		console.log(this.state.messages);
+		let thisApp = this;
+		Object.keys(this.state.messages || {}).forEach(function(key, index) {
+			console.log(key, index);
+			let msg = thisApp.state.messages[key];
+			console.log(msg);
+			messages.push(<div key={index}><span>{msg.user.email}</span>:<br/><span>{msg.message}</span></div>)
+		});
 		return (
 			<div className="col-md-12" style={{ margin: '0 auto'}}>
 				<div className="col-md-6 col-sm-12">
-					{JSON.stringify(this.state.messages)}	
+						{ messages }
 				</div>
 				<div className="col-md-6 col-sm-12">
 					<div className="form-group">
