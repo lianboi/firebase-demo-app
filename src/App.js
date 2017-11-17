@@ -29,13 +29,25 @@ class App extends Component {
     super(props);
     this.state = {
       value: '',
-      messages: {}
+      messages: {},
+      login: false
     };
     this.db = firebase.database();
     this.ref = this.db.ref('chatrooms/room1');
     this.firebaseData();
     //this.addRoom = this.props.addRoom;
     this.handleChange = this.handleChange.bind(this);
+    let thisApp = this;
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        // User is signed in.
+        thisApp.setState({
+          login: true
+        });
+      } else {
+        // No user is signed in.
+      }
+    });
   }
 
   firebaseData () {
@@ -68,14 +80,15 @@ class App extends Component {
     return (
       <Router>
         <div className="App">
-          <Header />
+          <Header login={ this.state.login } logOut={ this.logOut }/>
           <div className='container'>
           <Route exact path='/' render={ (props) => (<Home logOut={ this.logOut } />) } />
-          <Route exact path='/sign-in' component={ Login } />
-          <Route exact path='/sign-up' component={ SignUp } />
           <Route exact path='/about' component={ About } />
-          <Route exact path='/chatroom/:roomkey' component={ About } />
           <Route path='/chat-rooms' render={(props) => (<ChatRooms {...props} hello="world"/>)}/>
+          { !this.state.login ? <Route exact path='/sign-in' component={ Login } /> : '' }
+          { !this.state.login ? <Route exact path='/sign-up' component={ SignUp } />: '' }
+          { !this.state.login ? '' : <button onClick={ this.logOut }>Logout</button> }
+          <Route exact path='/chatroom/:roomkey' component={ About } />
           </div> 
           <Footer />
         </div>

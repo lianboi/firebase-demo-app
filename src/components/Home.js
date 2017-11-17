@@ -10,6 +10,9 @@ class Home extends Component {
             chatrooms: [],
             roomname: ''
         };
+    }
+
+    componentDidMount() {
         let db = firebase.database();
         let thisApp = this;
         db.ref('/chatrooms').on('value', function (snapshot) {
