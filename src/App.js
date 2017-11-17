@@ -11,6 +11,7 @@ import './bootstrap.min.css';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import About from './components/About';
+import Profile from './components/Profile';
 import firebase from './firebase';
 
 // const config = {
