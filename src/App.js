@@ -6,7 +6,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Home from './components/Home';
-import ChatRooms from './components/ChatRooms';
+import ChatRoom from './components/ChatRoom';
 import './bootstrap.min.css';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
@@ -85,11 +85,9 @@ class App extends Component {
           <div className='container'>
           <Route exact path='/' render={ (props) => (<Home logOut={ this.logOut } />) } />
           <Route exact path='/about' component={ About } />
-          <Route path='/chat-rooms' render={(props) => (<ChatRooms {...props} hello="world"/>)}/>
           { !this.state.login ? <Route exact path='/sign-in' component={ Login } /> : '' }
           { !this.state.login ? <Route exact path='/sign-up' component={ SignUp } />: '' }
-          { !this.state.login ? '' : <button onClick={ this.logOut }>Logout</button> }
-          <Route exact path='/chatroom/:roomkey' component={ About } />
+          <Route exact path='/chatroom/:roomkey' render={(props)=> <ChatRoom {...props} /> } />
           </div> 
           <Footer />
         </div>
