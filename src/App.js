@@ -88,6 +88,7 @@ class App extends Component {
           { !this.state.login ? <Route exact path='/sign-in' component={ Login } /> : '' }
           { !this.state.login ? <Route exact path='/sign-up' component={ SignUp } />: '' }
           <Route exact path='/chatroom/:roomkey' render={(props)=> <ChatRoom {...props} /> } />
+            <Route exact path='/me' render={(props)=> <Profile {...props}/>}/>
           </div> 
           <Footer />
         </div>

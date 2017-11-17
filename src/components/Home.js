@@ -9,10 +9,13 @@ class Home extends Component {
             user: '',
             chatrooms: [],
             roomname: '',
-            imageUploader:'',
+            /*imageUploader:'',
             imageFile:'',
-            imgUrl:''
+            imgUrl:''*/
         };
+    }
+
+    componentDidMount() {
         firebase.auth().onAuthStateChanged(User => {
             if(User){
                 this.setState({
@@ -25,9 +28,6 @@ class Home extends Component {
                 })
             }
         });
-    }
-
-    componentDidMount() {
         let db = firebase.database();
         let thisApp = this;
         db.ref('/chatrooms').on('value', function (snapshot) {
@@ -52,7 +52,7 @@ class Home extends Component {
         db.ref('/chatrooms').push(this.state.roomname);
     }
 
-    onImageUploaderChange = (event) => {
+   /* onImageUploaderChange = (event) => {
         //let that = this;
         console.log("image uploader",event.target.value);
 
@@ -72,7 +72,7 @@ class Home extends Component {
                 });
             },(error) =>{
                 alert('error occuring during state changed',error);
-            }/*,()=>{
+            }/!*,()=>{
             firebase.storage().ref('AppGallery/'+this.state.user+'/'+this.state.imgFileName).getDownloadURL().then(function(url) {
                 // `url` is the download URL for 'images/stars.jpg'
 
@@ -93,7 +93,7 @@ class Home extends Component {
             }).catch(function(error) {
                 // Handle any errors
             });
-            }*/
+            }*!/
         );
 
     };
@@ -116,7 +116,7 @@ class Home extends Component {
         }).catch(function(error) {
             // Handle any errors
         });
-    }
+    }*/
 
     render () {
         console.log('this.state-',this.state);
@@ -129,19 +129,6 @@ class Home extends Component {
         return (
             <div className="col-md-12">
                 <div className="col-md-12">
-                    <div className="image-upload-div">
-                        Upload an image:<input type="file"
-                                                name=""
-                                                accept="image/*"
-                                                id="fileButton"
-                                                ref="uploader"
-                                                onChange={this.onImageUploaderChange.bind(this)}/><br/>
-
-                        <progress value={this.state.imageUploader}
-                                  max="100"
-                                  id="uploader">{this.state.imageUploader}%</progress><br/>
-
-                    </div>
                     <p>chatrooms</p>
                     <div className="col-md-12" style={{ margin: '0 auto'}}>
                         { rooms }
