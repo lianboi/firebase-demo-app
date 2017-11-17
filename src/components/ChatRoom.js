@@ -39,12 +39,9 @@ class ChatRoom extends Component {
 
 	render () {
 		let messages = [];
-		console.log(this.state.messages);
 		let thisApp = this;
 		Object.keys(this.state.messages || {}).forEach(function(key, index) {
-			console.log(key, index);
 			let msg = thisApp.state.messages[key];
-			console.log(msg);
 			messages.push(<div key={index}><span>{msg.user.email}</span>:<br/><span>{msg.message}</span></div>)
 		});
 		return (
