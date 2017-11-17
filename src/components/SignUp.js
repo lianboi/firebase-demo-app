@@ -22,7 +22,12 @@ class SignUp extends Component{
             const promise = auth.createUserWithEmailAndPassword(this.state.email, this.state.password);
             promise.catch(e => {
                 console.log(e.message);
-                alert(e.message)
+                alert(e.message);
+            });
+            this.setState({
+                email: '',
+                password: '',
+                confirmpassword: ''
             });
         }
     };
