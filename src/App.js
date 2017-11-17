@@ -1,18 +1,28 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+//import logo from './logo.svg';
 import './App.css';
-import * as firebase from 'firebase';
+//import * as firebase from 'firebase';
+import Header from './components/Header';
+import Footer from './components/Footer';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import Home from './components/Home';
+import ChatRooms from './components/ChatRooms';
+import './bootstrap.min.css';
+import Login from './components/Login';
+import SignUp from './components/SignUp';
+import About from './components/About';
+import firebase from './firebase';
 
-const config = {
-	apiKey: "AIzaSyAJxFK24Ejbh6cBV6jFOYGpLEUF-7TkP3w",
-	authDomain: "fir-chat-app-2aa86.firebaseapp.com",
-	databaseURL: "https://fir-chat-app-2aa86.firebaseio.com",
-	projectId: "fir-chat-app-2aa86",
-	storageBucket: "fir-chat-app-2aa86.appspot.com",
-	messagingSenderId: "1050891722773"
-};
+// const config = {
+// 	apiKey: "AIzaSyAJxFK24Ejbh6cBV6jFOYGpLEUF-7TkP3w",
+// 	authDomain: "fir-chat-app-2aa86.firebaseapp.com",
+// 	databaseURL: "https://fir-chat-app-2aa86.firebaseio.com",
+// 	projectId: "fir-chat-app-2aa86",
+// 	storageBucket: "fir-chat-app-2aa86.appspot.com",
+// 	messagingSenderId: "1050891722773"
+// };
 
-firebase.initializeApp(config);
+// firebase.initializeApp(config);
 
 class App extends Component {
   constructor (props) {
@@ -33,6 +43,17 @@ class App extends Component {
     this.ref.on('value', function (snapshot) {
       thisApp.setState({ messages: snapshot.val() || {} });
     });
+    let db = this.db;
+    db.ref('chatrooms/rooms').on('value', function (snapshot) {
+      console.log('snapshot is....', snapshot);
+      thisApp.setState({ chatrooms: snapshot.val() || [] });
+    });
+  }
+
+  logOut () {
+    firebase.auth().signOut();
+    window.location.assign('/');
+    console.log('logout..................');
   }
 
   addRoom (evt) {
@@ -43,45 +64,22 @@ class App extends Component {
     this.setState({ value: evt.target.value });
   }
 
-  sendMessage (evt) {
-    let thisApp = this;
-    thisApp.ref.push({ 
-      time: firebase.database.ServerValue.TIMESTAMP,
-      message: thisApp.state.value
-    }).catch(function (err) {
-      console.log('error updating message:', err);
-    });
-    this.inputBox.value = ""; 
-    this.state.value = "";   
-  }
-
   render() {
-    let msgs = [];
-    let messages = this.state.messages;
-    Object.keys(this.state.messages || {}).forEach((key) => {
-      msgs.push(<li key={ key }>{ messages[key].message }</li>)
-    });
     return (
-      <div className="App">
-        <header className="App-header">
-          Hello Newers!
-        </header>
-        <p className="App-intro">
-          <strong> Your app config is:</strong><br/> {JSON.stringify(config)}
-        </p>
-        <p> 
-          <button onClick={(e) => this.addRoom(e)}>add room</button>
-        </p>
-        <div className="chat-box">
-          <ul>
-            { msgs }
-          </ul> 
+      <Router>
+        <div className="App">
+          <Header />
+          <div className='container'>
+          <Route exact path='/' render={ (props) => (<Home logOut={ this.logOut } />) } />
+          <Route exact path='/sign-in' component={ Login } />
+          <Route exact path='/sign-up' component={ SignUp } />
+          <Route exact path='/about' component={ About } />
+          <Route exact path='/chatroom/:roomkey' component={ About } />
+          <Route path='/chat-rooms' render={(props) => (<ChatRooms {...props} hello="world"/>)}/>
+          </div> 
+          <Footer />
         </div>
-        <div>
-          <input type="text" value={ this.state.value } onChange={ this.handleChange } ref={(input) => this.inputBox = input } />
-          <button onClick={ (e) => this.sendMessage(e) }>send</button>           
-        </div>
-      </div>
+      </Router>
     );
   }
 }
